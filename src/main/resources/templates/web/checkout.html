@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/layout :: layout(~{:: title}, ~{}, ~{:: #content}, ~{:: #js})}">
+
+<head>
+    <title>Checkout</title>
+</head>
+
+<body>
+<th:block id="content">
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" style="background-image: url(/img/breadcrumb.jpg)">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <div class="breadcrumb__option">
+                            <a href="/">Trang chủ</a>
+                            <span>Thanh toán</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="checkout__form">
+                <h4>Thông tin giao hàng</h4>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <form id="form-checkout">
+                            <div class="checkout__input form-group">
+                                <input class="form-control"
+                                       type="text" th:value="${isLogin ? currentUser.username : ''}"
+                                       placeholder="Họ tên"
+                                       id="username" name="name">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="checkout__input form-group">
+                                        <input class="form-control" type="text"
+                                               th:value="${isLogin ? currentUser.phone : ''}"
+                                               placeholder="Số điện thoại" id="phone" name="phone">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="checkout__input form-group">
+                                        <input class="form-control" type="text"
+                                               th:value="${isLogin ? currentUser.email : ''}"
+                                               placeholder="Email" id="email" name="email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__input form-group" th:if="${isLogin && addressList.size() > 0}">
+                                <a href="javascript:void(0)" class="chose-other-address" type="button"
+                                   data-toggle="modal" data-target="#modal-address">Chọn địa chỉ giao hàng khác</a>
+                            </div>
+                            <div class="checkout__input form-group">
+                                <select id="province" name="province" class="form-control"></select>
+                            </div>
+                            <div class="checkout__input form-group">
+                                <select id="district" name="district" class="form-control"></select>
+                            </div>
+                            <div class="checkout__input form-group">
+                                <select id="ward" name="ward" class="form-control"></select>
+                            </div>
+                            <div class="checkout__input form-group">
+                                <input type="text" class="form-control" placeholder="Địa chỉ giao hàng" id="address"
+                                       name="address">
+                            </div>
+                            <div class="checkout__input form-group">
+                                <input type="text" class="form-control" placeholder="Ghi chú đơn hàng..." id="note"
+                                       name="note">
+                            </div>
+                            <div class="checkout__input">
+                                <h4>Phương thức vận chuyển</h4>
+                                <div id="shipping-method">
+                                    <div class="d-flex align-items-center mb-2"
+                                         th:each="shippingMethod : ${shippingMethodList}">
+                                        <input type="radio" class="mr-1" th:value="${shippingMethod}"
+                                               th:id="${shippingMethod}"
+                                               th:checked="${shippingMethod == shippingMethodList[0]}"
+                                               name="shipping-method">
+                                        <label th:for="${shippingMethod}" class="mb-0"
+                                               th:text="${shippingMethod.getDisplayValue()}">Thanh toán khi giao
+                                            hàng</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__input">
+                                <h4>Phương thức thanh toán</h4>
+                                <div id="payment-method">
+                                    <div class="d-flex align-items-center mb-2"
+                                         th:each="paymentMethod : ${paymentMethodList}">
+                                        <input type="radio" class="mr-1" th:value="${paymentMethod}"
+                                               th:id="${paymentMethod}"
+                                                  th:checked="${paymentMethod == paymentMethodList[0]}"
+                                               name="payment-method">
+                                        <label th:for="${paymentMethod}" class="mb-0"
+                                               th:text="${paymentMethod.getDisplayValue()}">Thanh toán khi giao
+                                            hàng</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="checkout__input">
+                            <h4>Mã giảm giá</h4>
+                            <div class="d-flex align-items-center">
+                                <input type="text" placeholder="Nhập mã giảm giá (nếu có)" id="coupon-input">
+                                <button class="site-btn btn-apply-coupon">ÁP DỤNG</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="checkout__order">
+                            <h4>Thông tin đơn hàng</h4>
+                            <div class="checkout__order__products">Sản phẩm <span>Tổng</span></div>
+                            <ul>
+                                <li th:each="cartItem : ${cart.cartItems}">
+                                    <th:block th:text="|${cartItem.product.name} x ${cartItem.quantity}|">Vegetable’s
+                                        Package
+                                    </th:block>
+                                    <span th:with="total=${cartItem.product.discountPrice != null ? cartItem.product.discountPrice * cartItem.quantity : cartItem.product.price * cartItem.quantity}"
+                                          th:text="|${#numbers.formatInteger(total, 3, 'POINT')}đ|">$75.99</span>
+                                </li>
+                            </ul>
+                            <div class="checkout__order__subtotal">Thành tiền <span
+                                    class="temporary-amount"></span></div>
+                            <div class="checkout__order__discount">Giảm giá <span class="discount-amount"></span>
+                            </div>
+                            <div class="checkout__order__total">Tổng tiền <span class="total-amount"></span>
+                            </div>
+                            <button class="site-btn" id="btn-submit-order">XÁC NHẬN</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="modal-address" th:if="${isLogin && addressList.size() > 0}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Chọn địa chỉ</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width: 10%; text-align: center">STT</th>
+                            <th>Địa chỉ</th>
+                            <th style="width: 15%; text-align: center">Mặc định</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="address, state : ${addressList}">
+                            <td style="text-align: center; vertical-align: middle;">
+                                <span th:text="${state.index + 1}"></span>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <span th:text="|${address.detail}, ${address.ward}, ${address.district}, ${address.province}|"></span>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <span class="text-success" th:if="${address.isDefault}" style="font-size: 20px">
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                </span>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <button th:with="index=${state.index}" class="primary-btn border-0"
+                                        th:onclick="|chooseAddress(${index})|">
+                                    Chọn
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Checkout Section End -->
+</th:block>
+
+<th:block id="js">
+    <script th:inline="javascript">
+        const addressList = [[${addressList}]];
+        console.log(addressList)
+    </script>
+    <script src="/js/web/checkout.js"></script>
+</th:block>
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Bài viết của tôi</title>
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Bài viết của tôi
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-12">
+                    <a href="/admin/blogs/create" type="button" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Viết bài
+                    </a>
+                    <a href="/admin/blogs/own-blogs" type="button" class="btn btn-info">
+                        <i class="fas fa-redo"></i> Refresh
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover datatables-table">
+                                <thead>
+                                <tr>
+                                    <th>Tiêu đề</th>
+                                    <th>Danh mục</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="blog : ${blogs}">
+                                    <td>
+                                        <a th:href="@{/admin/blogs/{id}/detail(id=${blog.id})}"
+                                           th:text="${blog.title}"></a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info mr-1" th:each="tag : ${blog.tags}"
+                                              th:text="${tag.name}"></span>
+                                    </td>
+                                    <td th:text="${blog.status ? 'Công khai' : 'Nháp'}">Trạng thái</td>
+                                    <td th:text="${#dates.format(blog.createdAt, 'dd/MM/yyyy')}">Ngày tạo</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+
+</th:block>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/layout :: layout(~{:: title}, ~{}, ~{:: #content}, ~{:: #js})}">
+
+<head>
+    <title>Quản lý địa chỉ</title>
+</head>
+
+<body>
+<th:block id="content">
+    <!-- Blog Section Begin -->
+    <section class="account-section spad">
+        <div class="container p-4 bg-white">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="customer-sidebar">
+                        <th:block th:replace="~{user/fragments/sidebar :: customer-sidebar}"></th:block>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="customer-info">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4>Thông tin địa chỉ</h4>
+                            <button class="border-0 primary-btn btn-create-address">Thêm địa chỉ mới</button>
+                        </div>
+                        <div class="address-info">
+                            <div class="d-flex justify-content-between align-items-center"
+                                 th:each="address, state : ${addressList}">
+                                <p class="address-detail">
+                                    <th:block
+                                            th:text="|${state.index + 1}. ${address.detail}, ${address.ward}, ${address.district}, ${address.province}|"></th:block>
+                                    <span class="address-sub" th:if="not ${address.isDefault}" th:onclick="|setDefaultAddress(${address.id})|">(Đặt làm địa chỉ mặc định)</span>
+                                    <span class="address-default" th:if="${address.isDefault}">(Mặc định)</span>
+                                </p>
+                                <div class="btn-action-list">
+                                    <button class="btn-action" th:onclick="|openModalUpdate(${address.id})|"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                                    <button th:if="not ${address.isDefault}" class="btn-action" th:onclick="|deleteAddress(${address.id})|"><i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Blog Section End -->
+
+    <!-- Modal create address -->
+    <div class="modal fade" id="modal-address" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tạo địa chỉ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-address">
+                        <div class="checkout__input form-group">
+                            <select id="province" class="form-control" name="province"></select>
+                        </div>
+                        <div class="checkout__input form-group">
+                            <select id="district" class="form-control" name="district"></select>
+                        </div>
+                        <div class="checkout__input form-group">
+                            <select id="ward" class="form-control" name="ward"></select>
+                        </div>
+                        <div class="checkout__input form-group">
+                            <input type="text" placeholder="Địa chỉ giao hàng" id="address" class="form-control" name="address">
+                        </div>
+                    </form>
+                    <div class="checkout__input">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" id="set-address-default">
+                            <label for="set-address-default" class="mb-0 ml-1 text-muted">Đặt làm địa chỉ mặc
+                                định</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="border-0 primary-btn bg-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="border-0 primary-btn btn-handle-address" th:onclick="|handleAddress()|">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block id="js">
+    <script th:inline="javascript">
+        const addressList = [[${addressList}]];
+    </script>
+    <script src="/js/user/address.js"></script>
+</th:block>
+</body>
+
+</html>

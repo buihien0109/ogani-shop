@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Danh sách nhập hàng</title>
+</head>
+
+<body>
+<!-- BODY -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Danh sách nhập hàng
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-12">
+                    <a href="/admin/transactions/create" class="btn btn-primary" id="btn-open-modal">
+                        <i class="fas fa-plus"></i> Tạo phiếu nhập hàng
+                    </a>
+                    <a href="/admin/transactions" type="button" class="btn btn-info">
+                        <i class="fas fa-redo"></i> Refresh
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover datatables-table">
+                                <thead>
+                                <tr>
+                                    <th>Mã phiếu nhập</th>
+                                    <th>Tên nhà cung cấp</th>
+                                    <th>Ngày nhập</th>
+                                    <th>Người nhận</th>
+                                    <th>Người gửi</th>
+                                    <th>Tổng tiền</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="transaction : ${transactions}">
+                                    <td>
+                                        <a th:href="@{/admin/transactions/{id}/detail(id=${transaction.id})}"
+                                           th:text="${transaction.id}"></a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/admin/suppliers/{id}/detail(id=${transaction.supplier.supplierId})}"
+                                           th:text="${transaction.supplier.name}"></a>
+                                    </td>
+                                    <td th:text="${#dates.format(transaction.transactionDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${transaction.receiverName}"></td>
+                                    <td th:text="${transaction.senderName}"></td>
+                                    <td th:text="${#numbers.formatInteger(transaction.totalAmount,3,'COMMA')}"></td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+
+</th:block>
+</body>
+
+</html>

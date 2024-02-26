@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{:: #css}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Chi tiết user</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/plugins/select2/css/select2.min.css}"/>
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/dist/css/style.css}">
+    </th:block>
+
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/admin/users">User</a>
+                        </li>
+                        <li class="breadcrumb-item active" th:text="${user.username}">
+                            Bui Hien
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-12">
+                    <a href="/admin/users" type="button" class="btn btn-default">
+                        <i class="fas fa-chevron-left"></i> Quay lại
+                    </a>
+                    <button type="button" class="btn btn-info px-4" id="btn-update">
+                        Cập nhật
+                    </button>
+                    <button type="button" class="btn btn-warning px-4" id="btn-reset-password">
+                        Reset mật khẩu
+                    </button>
+                    <button type="button" class="btn btn-success px-4" id="btn-enable-user" th:classappend="${user.enabled ? 'd-none' : ''}">
+                        Kích hoạt user
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="custom-content-below-home-tab" data-toggle="pill"
+                                       href="#custom-content-below-home" role="tab"
+                                       aria-controls="custom-content-below-home" aria-selected="true">Thông tin cá
+                                        nhân</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill"
+                                       href="#custom-content-below-profile" role="tab"
+                                       aria-controls="custom-content-below-profile" aria-selected="false">Danh sách đơn
+                                        hàng</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="custom-content-below-tabContent">
+                                <div class="tab-pane fade active show" id="custom-content-below-home" role="tabpanel"
+                                     aria-labelledby="custom-content-below-home-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <form id="form-update-user">
+                                                <div class="form-group mt-4">
+                                                    <label>Họ tên</label>
+                                                    <input type="text" class="form-control" id="username"
+                                                           th:value="${user.username}" name="username"/>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input type="text" class="form-control" id="email"
+                                                           th:value="${user.email}" disabled/>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Số điện thoại</label>
+                                                    <input type="text" class="form-control" id="phone"
+                                                           th:value="${user.phone}" name="phone"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Quyền</label>
+                                                    <div class="select2-purple">
+                                                        <select class="select2 form-control" multiple="multiple" id="roles" name="roles">
+                                                            <option th:each="role : ${roles}"
+                                                                    th:value="${role.roleId}"
+                                                                    th:text="${role.name}"></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mt-4">
+                                                <label>Avatar</label>
+                                                <div class="user-avatar-container d-flex align-items-center">
+                                                    <img id="avatar-preview" th:src="${user.avatar}" alt="">
+                                                    <label for="avatar">Đổi Avatar</label>
+                                                    <input type="file" id="avatar" class="d-none">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel"
+                                     aria-labelledby="custom-content-below-profile-tab">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="mt-4 table table-bordered table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>Order ID</th>
+                                                    <th>Danh sách sản phẩm</th>
+                                                    <th>Tổng tiền đơn hàng</th>
+                                                    <th>Ngày đặt hàng</th>
+                                                    <th>Trạng thái</th>
+                                                </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                <tr th:each="order : ${orders}">
+                                                    <td>
+                                                        <a th:href="@{/admin/orders/{id}/detail(id=${order.orderNumber})}"
+                                                           th:text="${order.orderNumber}"></a>
+                                                    </td>
+                                                    <td>
+                                                        <ul>
+                                                            <li th:each="orderItem : ${order.orderItems}">
+                                                                <a th:href="@{/admin/products/{id}/detail(id=${orderItem.productId})}"
+                                                                   th:text="${orderItem.productName}"></a>
+                                                                <span th:text="|(x ${orderItem.quantity})|"></span>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td class="currency" th:text="${order.getTotalAmount()}"></td>
+                                                    <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+                                                    <th:block>
+                                                        <td th:if="${order.status == T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).COMPLETE}"
+                                                            class="text-success">Hoàn thành
+                                                        </td>
+                                                        <td th:if="${order.status == T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).RETURNED}"
+                                                            class="text-secondary">Trả hàng
+                                                        </td>
+                                                        <td th:if="${order.status == T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).CANCELED}"
+                                                            class="text-danger">Hủy đơn
+                                                        </td>
+                                                        <td th:if="${order.status == T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).WAIT}"
+                                                            class="text-primary">Chờ xác nhận
+                                                        </td>
+                                                        <td th:if="${order.status == T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).DELIVERY}"
+                                                            class="text-warning">Đang vận chuyển
+                                                        </td>
+                                                    </th:block>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+    <script th:src="@{/admin-assets/admin-lte/plugins/select2/js/select2.full.min.js}"></script>
+
+    <script th:inline="javascript">
+        const roles = [[${roles}]];
+        const orders = [[${orders}]];
+        const user = [[${user}]];
+        console.log({roles, orders, user});
+    </script>
+    <script th:src="@{/admin-assets/assets/js/user/detail.js}"></script>
+</th:block>
+
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{:: #css}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Tạo bài viết</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/plugins/summernote/summernote-bs4.min.css}"/>
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/plugins/select2/css/select2.min.css}"/>
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/dist/css/style.css}">
+    </th:block>
+
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/admin/blogs/own-blogs">Blog</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Tạo bài viết
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-6">
+                    <a href="/admin/blogs/own-blogs" type="button" class="btn btn-default">
+                        <i class="fas fa-chevron-left"></i> Quay lại
+                    </a>
+                    <button type="button" class="btn btn-info px-4" id="btn-create">
+                        Lưu
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <form id="form-create-blog">
+                                        <div class="form-group">
+                                            <label>Tiêu đề</label>
+                                            <input type="text" class="form-control" id="title" name="title"/>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Nội dung</label>
+                                            <textarea id="content" class="form-control" rows="3" name="content"></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Mô tả ngắn</label>
+                                            <textarea id="description" class="form-control" rows="3" name="description"></textarea>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Trạng thái</label>
+                                        <select id="status" class="form-control">
+                                            <option value="false">
+                                                Nháp
+                                            </option>
+                                            <option value="true">
+                                                Công khai
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Danh mục</label>
+                                        <div class="select2-purple">
+                                            <select class="select2 form-control" multiple="multiple" id="tag">
+                                                <option th:each="tag : ${tags}" th:value="${tag.id}"
+                                                        th:text="${tag.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+    <script th:src="@{/admin-assets/admin-lte/plugins/summernote/summernote-bs4.min.js}"></script>
+    <script th:src="@{/admin-assets/admin-lte/plugins/select2/js/select2.full.min.js}"></script>
+    <script th:src="@{/admin-assets/assets/js/blog/create.js}"></script>
+</th:block>
+
+</body>
+
+</html>

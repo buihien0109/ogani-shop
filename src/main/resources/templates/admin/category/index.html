@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+
+<head>
+    <title>Danh mục</title>
+</head>
+
+<body>
+<!-- BODY -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Danh mục
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-12">
+                    <button class="btn btn-primary" id="btn-open-modal-parent">
+                        <i class="fas fa-plus"></i> Tạo danh mục cha
+                    </button>
+                    <button class="btn btn-warning" id="btn-open-modal-sub">
+                        <i class="fas fa-plus"></i> Tạo danh mục con
+                    </button>
+                    <a href="/admin/categories" type="button" class="btn btn-info">
+                        <i class="fas fa-redo"></i> Refresh
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 cl-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover" id="table-category">
+                                <thead>
+                                <tr>
+                                    <th>Danh mục cha</th>
+                                    <th>Danh mục con</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+
+                            <div class="d-flex justify-content-center mt-3" id="pagination">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Parent Category -->
+    <div class="modal fade" id="modal-parent-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="modal-tag-title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5" id="modal-parent-title">Tạo danh mục</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-parent-category">
+                        <div class="form-group mb-0">
+                            <input type="text" class="form-control" id="input-parent-name" placeholder="Enter name" name="parentName">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-handle-parent">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sub Category -->
+    <div class="modal fade" id="modal-sub-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="modal-tag-title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5" id="modal-sub-title">Tạo danh mục</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-sub-category">
+                        <div class="form-group">
+                            <label>Danh mục cha</label>
+                            <select class="form-control mb-3" id="input-parent-id" name="parentId">
+                                <option hidden="hidden" value="">Chọn danh mục cha</option>
+                                <option th:each="categoryParent : ${categoryParentList}"
+                                        th:value="${categoryParent.categoryId}"
+                                        th:text="${categoryParent.name}">123</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label>Tên danh mục con</label>
+                            <input type="text" class="form-control" id="input-sub-name" placeholder="Enter name" name="subName">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-handle-sub">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block id="js">
+    <script th:inline="javascript">
+        let categoryList = [[${categoryList}]];
+        console.log(categoryList);
+    </script>
+    <script th:src="@{/admin-assets/assets/js/category/index.js}"></script>
+</th:block>
+</body>
+
+</html>

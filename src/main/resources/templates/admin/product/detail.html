@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{:: #css}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Chi tiết sản phẩm</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/dist/css/style.css}"/>
+    </th:block>
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/admin/products">Product</a>
+                        </li>
+                        <li class="breadcrumb-item active" th:text="${product.name}">
+                            Sữa chua trân châu
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-6">
+                    <a href="/admin/products" type="button" class="btn btn-default">
+                        <i class="fas fa-chevron-left"></i> Quay lại
+                    </a>
+                    <button type="button" class="btn btn-info px-4" id="btn-update">
+                        Cập nhật
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="custom-content-below-product-info-tab"
+                                       data-toggle="pill"
+                                       href="#product-info" role="tab"
+                                       aria-controls="custom-content-below-home" aria-selected="true">Thông tin sản
+                                        phẩm</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="custom-content-below-product-image-tab" data-toggle="pill"
+                                       href="#product-image" role="tab"
+                                       aria-controls="custom-content-below-profile" aria-selected="false">Ảnh mô tả</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="custom-content-below-product-attribute-tab"
+                                       data-toggle="pill"
+                                       href="#product-attribute" role="tab"
+                                       aria-controls="custom-content-below-messages" aria-selected="false">Thuộc
+                                        tính</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="custom-content-below-product-review-tab" data-toggle="pill"
+                                       href="#product-review" role="tab"
+                                       aria-controls="custom-content-below-settings" aria-selected="false">Đánh giá</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="custom-content-below-tabContent">
+                                <div class="tab-pane fade active show" id="product-info" role="tabpanel"
+                                     aria-labelledby="custom-content-below-home-tab">
+                                    <form id="form-update-product">
+                                        <div class="row mt-4">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label>Tên sản phẩm</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                           th:value="${product.name}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mô tả ngắn</label>
+                                                    <textarea id="description" class="form-control" rows="16"
+                                                              name="description"
+                                                              th:text="${product.description}"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Số lượng</label>
+                                                    <input type="text" class="form-control" id="stock-quantity"
+                                                           name="stockQuantity" th:value="${product.stockQuantity}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Giá sản phẩm</label>
+                                                    <input type="text" class="form-control" id="price" name="price"
+                                                           th:value="${product.price}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Trạng thái</label>
+                                                    <select id="status" class="form-control" name="status">
+                                                        <option th:each="status : ${statusList}" th:value="${status}"
+                                                                th:selected="${product.status == status}"
+                                                                th:text="${status.getDisplayValue()}"></option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Danh mục cha</label>
+                                                    <select id="parent-category" class="form-control" name="parent">
+                                                        <option hidden="hidden">Chọn danh mục cha</option>
+                                                        <option th:each="category : ${categoryList}"
+                                                                th:value="${category.getMainCategory().categoryId}"
+                                                                th:text="${category.getMainCategory().name}"></option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Danh mục con</label>
+                                                    <select id="sub-category" class="form-control" name="sub">
+                                                        <option hidden="hidden">Chọn danh mục con</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Nhà cung cấp</label>
+                                                    <select id="supplier" class="form-control" name="supplier">
+                                                        <option hidden="hidden">Chọn nhà cung cấp</option>
+                                                        <option th:each="supplier : ${supplierList}"
+                                                                th:value="${supplier.supplierId}"
+                                                                th:selected="${product.supplier != null && product.supplier.supplierId == supplier.supplierId}"
+                                                                th:text="${supplier.name}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="product-image" role="tabpanel"
+                                     aria-labelledby="custom-content-below-profile-tab">
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <label>Ảnh đại diện</label>
+                                            <div class="d-flex align-items-center">
+                                                <div class="product-image-item product-main-image-item mr-4">
+                                                    <img th:src="${product.mainImage != null ? product.mainImage : 'https://placehold.co/600x400'}"
+                                                         alt="Ảnh đại diện"
+                                                         class="img-fluid">
+                                                </div>
+                                                <div class="product-image-item">
+                                                    <label for="input-upload-main-image">
+                                                        <span>Upload ảnh đại diện</span>
+                                                        <img src="/img/image-placeholder.png" alt="Ảnh upload"
+                                                             class="img-fluid">
+                                                    </label>
+                                                    <input type="file" class="d-none" id="input-upload-main-image">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <label>Ảnh mô tả</label>
+                                            <div class="d-flex align-items-center flex-wrap">
+                                                <div class="d-flex align-items-center flex-wrap"
+                                                     id="list-product-sub-image-item">
+                                                    <div th:if="not ${#lists.isEmpty(product.subImages)}"
+                                                         th:each="image : ${product.subImages}"
+                                                         class="product-image-item product-sub-image-item mr-4 mb-4"
+                                                         th:data-image-sub-id="${image}">
+                                                        <img th:src="${image}" alt="Ảnh mô tả"
+                                                             class="img-fluid">
+                                                        <span class="btn-action btn-action-delete"
+                                                              th:attr="onclick=|deleteSubImage('${image}')|"><i
+                                                                class="fas fa-times-circle"></i></span>
+                                                    </div>
+                                                    <div class="product-image-item product-image-item-upload-sub-image mr-4 mb-4">
+                                                        <label for="input-upload-sub-image">
+                                                            <span>Upload ảnh mô tả</span>
+                                                            <img src="/img/image-placeholder.png" alt="Ảnh upload"
+                                                                 class="img-fluid">
+                                                        </label>
+                                                        <input type="file" class="d-none" id="input-upload-sub-image">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="product-attribute" role="tabpanel"
+                                     aria-labelledby="custom-content-below-messages-tab">
+                                    <div class="row mt-4" id="product-attribute-list">
+                                        <div class="col-6" th:each="attribute : ${product.attributes}"
+                                             th:data-attribute-id="${attribute.attributeId}">
+                                            <div class="product-attribute-item mb-3">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <label th:text="${attribute.attributeName}" class="mb-0"></label>
+                                                    <div class="ml-2">
+                                                        <span class="btn-action btn-action-edit"
+                                                              th:onclick="|openModalUpdateAttribute(${attribute.attributeId})|"><i
+                                                                class="fas fa-pencil-alt"></i></span>
+                                                        <span class="btn-action btn-action-delete"
+                                                              th:onclick="|deleteAttribute(${attribute.attributeId})|"><i
+                                                                class="fas fa-trash-alt"></i></span>
+                                                    </div>
+                                                </div>
+                                                <textarea th:text="${attribute.attributeValue}" class="form-control"
+                                                          rows="5"
+                                                          th:onkeyup="|saveAttributeValue(this, ${attribute.attributeId})|"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-info" id="btn-open-modal-create-attribute">Thêm thuộc
+                                                tính
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="product-review" role="tabpanel"
+                                     aria-labelledby="custom-content-below-settings-tab">
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <table class="table table-bordered table-hover" id="table-review">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width: 15%">Username</th>
+                                                    <th style="width: 10%">Đánh giá</th>
+                                                    <th style="width: 40%">Nội dung</th>
+                                                    <th style="width: 15%">Thời gian</th>
+                                                    <th style="width: 10%">Trạng thái</th>
+                                                    <th style="width: 10%"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+                                            </table>
+                                            <div class="d-flex justify-content-center mt-3"
+                                                 id="review-pagination"></div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Attribute -->
+    <div class="modal fade" id="modal-attribute" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="modal-attribute-title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5" id="modal-attribute-title">Thêm thuộc tính</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="input-attribute-name"
+                           placeholder="Enter attribute name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-handle-attribute">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Review -->
+    <div class="modal fade" id="modal-review" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Cập nhật đánh giá</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="review-product-rating">
+                        <div class="text-center">
+                            <span class="review-product-rating-item" data-rating="1" data-message="Không thích"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="2" data-message="Tạm được"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="3" data-message="Bình thường"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="4" data-message="Hài lòng"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="5" data-message="Tuyệt vời"><i
+                                    class="fa fa-star"></i></span>
+                        </div>
+                        <div class="text-center">
+                            <p class="review-product-rating-result"></p>
+                        </div>
+                    </div>
+                    <div class="review-product-content">
+                        <textarea id="review-content" placeholder="Nhập review" class="form-control"
+                                  rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-update-review">Cập nhật</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<th:block id="js">
+
+    <script th:inline="javascript">
+        const product = [[${product}]];
+        const statusList = [[${statusList}]];
+        const categoryList = [[${categoryList}]];
+        const reviewList = [[${reviewList}]];
+        const supplierList = [[${supplierList}]];
+
+        console.log({product, statusList, categoryList, reviewList, supplierList});
+    </script>
+    <script th:src="@{/admin-assets/assets/js/product/product-info.js}"></script>
+    <script th:src="@{/admin-assets/assets/js/product/product-image.js}"></script>
+    <script th:src="@{/admin-assets/assets/js/product/product-attribute.js}"></script>
+    <script th:src="@{/admin-assets/assets/js/product/product-review.js}"></script>
+</th:block>
+
+</body>
+
+</html>

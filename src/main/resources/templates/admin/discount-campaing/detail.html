@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{:: #css}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Chi tiết khuyến mại</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/plugins/select2/css/select2.min.css}"/>
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/plugins/daterangepicker/daterangepicker.css}"/>
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/dist/css/style.css}">
+    </th:block>
+
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/admin/discount-campaigns">Khuyến mại</a>
+                        </li>
+                        <li class="breadcrumb-item active" th:text="${discountCampaign.name}">
+                            Giảm giá tết
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-6">
+                    <a href="/admin/discount-campaigns" type="button" class="btn btn-default">
+                        <i class="fas fa-chevron-left"></i> Quay lại
+                    </a>
+                    <button type="button" class="btn btn-info px-4" id="btn-update">
+                        Cập nhật
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form id="form-update-discount-campaing">
+                                        <div class="form-group">
+                                            <label>Tên khuyến mại</label>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                   th:value="${discountCampaign.name}"/>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Mô tả</label>
+                                            <textarea class="form-control" id="description" rows="5" name="description"
+                                                      th:text="${discountCampaign.description}"></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Hình thức giảm</label>
+                                            <select id="type" class="form-control" name="type">
+                                                <option th:each="type : ${typeList}"
+                                                        th:value="${type}"
+                                                        th:selected="${type == discountCampaign.discountType}"
+                                                        th:text="${type.getValue()}"></option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Giá trị giảm</label>
+                                            <input type="text" class="form-control" id="value" name="value"
+                                                   th:value="${discountCampaign.discountValue}"/>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Thời gian áp dụng</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                </span>
+                                                </div>
+                                                <input type="text" class="form-control float-right" id="date"
+                                                       name="date">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h5 class="mb-4">Lựa chọn sản phẩm áp dụng</h5>
+                                    <div class="mb-3">
+                                        <button class="btn btn-primary" id="btn-select-all-product">Tất cả sản phẩm
+                                        </button>
+                                        <button class="btn btn-warning" id="btn-open-modal-category">Chọn theo danh
+                                            mục
+                                        </button>
+                                        <button class="btn btn-danger" id="btn-delete-all-product" disabled>Xóa lựa
+                                            chọn
+                                        </button>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-group">
+                                            <div class="select2-purple">
+                                                <select class="form-control select2" multiple="multiple"
+                                                        data-placeholder="Chọn sản phẩm"
+                                                        id="product-select">
+                                                    <option th:each="product : ${productList}"
+                                                            th:value="${product.productId}"
+                                                            th:text="${product.name}">Sản phẩm 1
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <table class="table table-bordered table-hover" id="table-product">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 5%">
+                                                    <input type="checkbox" id="input-check-all">
+                                                </th>
+                                                <th style="width: 55%">Tên sản phẩm</th>
+                                                <th style="width: 20%">Giá</th>
+                                                <th style="width: 20%">Giá khuyến mại</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="modal-category">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Chọn danh mục</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="select2-purple">
+                            <select class="form-control select2"
+                                    data-placeholder="Chọn danh mục"
+                                    multiple="multiple"
+                                    style="width: 100%;"
+                                    id="category">
+                                <option th:each="category : ${categoryList}"
+                                        th:value="${category.categoryId}"
+                                        th:text="${category.name}">Sản phẩm 1
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="btn-chose-category">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block id="js">
+    <script th:src="@{/admin-assets/admin-lte/plugins/moment/moment.min.js}"></script>
+    <script th:src="@{/admin-assets/admin-lte/plugins/daterangepicker/daterangepicker.js}"></script>
+    <script th:src="@{/admin-assets/admin-lte/plugins/select2/js/select2.full.min.js}"></script>
+    <script th:inline="javascript">
+        const discountCampaign = [[${discountCampaign}]];
+        const productList = [[${productList}]];
+        const categoryList = [[${categoryList}]];
+        console.log({discountCampaign, productList, categoryList});
+    </script>
+    <script th:src="@{/admin-assets/assets/js/discount-campaing/detail.js}"></script>
+</th:block>
+
+</body>
+
+</html>

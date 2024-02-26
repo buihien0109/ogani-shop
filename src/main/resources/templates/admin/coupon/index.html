@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{:: #css}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+
+<head>
+    <title>Danh mục coupon</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/plugins/daterangepicker/daterangepicker.css}"/>
+        <link rel="stylesheet" th:href="@{/admin-assets/admin-lte/dist/css/style.css}">
+    </th:block>
+</head>
+
+<body>
+<!-- BODY -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Danh mục coupon
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-12">
+                    <button class="btn btn-primary" id="btn-open-modal">
+                        <i class="fas fa-plus"></i> Tạo coupon
+                    </button>
+                    <a href="/admin/coupons" type="button" class="btn btn-info">
+                        <i class="fas fa-redo"></i> Refresh
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Coupon ID</th>
+                                    <th>Mã kích hoạt</th>
+                                    <th>% giảm</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thời gian</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+
+                            <div class="d-flex justify-content-center mt-3" id="pagination">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Tag -->
+            <div class="modal fade" id="modal-coupon">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Default Modal</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form-coupon">
+                                <div class="form-group">
+                                    <label>Mã kích hoạt</label>
+                                    <input type="text" class="form-control" id="code" name="code"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>% giảm</label>
+                                    <input type="text" class="form-control" id="discount" name="discount"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Thời gian áp dụng</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                </span>
+                                        </div>
+                                        <input type="text" class="form-control float-right" id="date">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer justify-content-end">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-primary" id="btn-handle">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+    <script th:src="@{/admin-assets/admin-lte/plugins/moment/moment.min.js}"></script>
+    <script th:src="@{/admin-assets/admin-lte/plugins/daterangepicker/daterangepicker.js}"></script>
+    <script th:inline="javascript">
+        let coupons = [[${coupons}]];
+        console.log(coupons);
+    </script>
+    <script th:src="@{/admin-assets/assets/js/coupon/index.js}"></script>
+</th:block>
+</body>
+
+</html>

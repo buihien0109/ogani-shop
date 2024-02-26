@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:fragment="header(categories, cart, wishList)">
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="header__logo">
+                        <a href="/"><img src="/img/logo.png" alt="logo"></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero__search mb-0 h-100 d-flex align-items-center">
+                        <div class="hero__search__form">
+                            <form action="#">
+                                <button type="submit" class="site-btn">
+                                    <span><i class="fa fa-search" aria-hidden="true"></i></span>
+                                </button>
+                                <input type="text" placeholder="Tìm kiếm sản phẩm"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="header__cart">
+                        <ul>
+                            <li><a href="/yeu-thich" class="wishlist-icon"><i class="fa fa-heart"></i> <span th:text="${wishList.size()}">1</span></a></li>
+                            <li><a href="/gio-hang" class="shopping-cart-icon"><i class="fa fa-shopping-bag"></i> <span th:text="${cart.cartItems.size()}">3</span></a></li>
+                            <th:block sec:authorize="not isAuthenticated()">
+                                <li><a href="/dang-nhap"><i class="fa fa-user"></i></a></li>
+                            </th:block>
+                            <th:block sec:authorize="isAuthenticated()">
+                                <li>
+                                    <div class="user-avatar-container">
+                                        <img class="user-avatar" th:src="${#authentication.principal.getAvatar()}" alt="">
+
+                                        <ul class="menu">
+                                            <li class="menu-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                                                <a href="/admin/dashboard"><span><i class="fa fa-user-secret" aria-hidden="true"></i></span> Trang quản trị</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <a href="/khach-hang/tai-khoan"><span><i class="fa fa-user" aria-hidden="true"></i></span> Tài khoản</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <a href="/khach-hang/quan-ly-don-hang"><span><i class="fa fa-file-o" aria-hidden="true"></i></span> Quản lý đơn hàng</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <a href="/khach-hang/dia-chi"><span><i class="fa fa-address-book-o" aria-hidden="true"></i></span> Sổ địa chỉ</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <a href="/khach-hang/lich-su-giao-dich"><span><i class="fa fa-history" aria-hidden="true"></i></span> Lịch sử giao dịch</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <a href="javascript:void(0)" class="logout-btn" onclick="logout()"><span><i class="fa fa-sign-out" aria-hidden="true"></i></span> Đăng xuất</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+    <!-- Hero Section Begin -->
+    <section class="hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="hero__categories py-4">
+                        <div class="hero__categories__all">
+                            <div class="hero__categories__all_btn">
+                                <i class="fa fa-bars"></i>
+                                <span>Danh mục</span>
+                            </div>
+                            <ul class="menu">
+                                <li class="menu-item" th:each="category : ${categories}" th:classappend="${#lists.isEmpty(category.subCategories) ? '' : 'has-sub-menu'}">
+                                    <div class="menu-item-label">
+                                        <a th:href="@{/danh-muc/{slug} (slug=${category.mainCategory.slug})}"
+                                           th:text="${category.mainCategory.name}"></a>
+                                        <span th:if="not ${#lists.isEmpty(category.subCategories)}"><span class="icon"><i class="fa fa-angle-right"
+                                                                    aria-hidden="true"></i></span></span>
+                                    </div>
+                                    <div class="sub-menu">
+                                        <ul>
+                                            <li class="menu-item" th:each="subCategory : ${category.subCategories}">
+                                                <a th:href="@{/danh-muc/{categorySlug}?sub={subSlug} (categorySlug=${category.mainCategory.slug}, subSlug=${subCategory.slug})}" th:text="${subCategory.name}">Thiết bị điện tử 1</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center justify-content-end h-100">
+                        <div class="mr-3 text-muted d-flex align-items-center">
+                            <span class="font-weight-bolder d-inline-block mr-1"><i class="fa fa-envelope-o" aria-hidden="true"></i></span>
+                            <span><a href="/bai-viet" class="text-muted">Tin tức Ogani</a></span>
+                        </div>
+                        <div class="text-muted d-flex align-items-center">
+                            <span class="font-weight-bolder d-inline-block mr-1"><i class="fa fa-headphones" aria-hidden="true"></i></span>
+                            <span><a href="#" class="text-muted">Tư vấn mua hàng</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Hero Section End -->
+</th:block>
+</body>
+</html>

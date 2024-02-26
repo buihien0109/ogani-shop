@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/layout :: layout(~{:: title}, ~{:: #css}, ~{:: #content}, ~{:: #js})}">
+
+<head>
+    <title th:text="${product.name}">Product Detail</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.min.css"
+              integrity="sha512-K1k7jSn9RDKEcn/ugqVVvWYu0bcS3q1w6m/5pQSnrj0bCfIqF6Wk49lkmckSb4wglvTP9V17LtS0q0XxYccXbg=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    </th:block>
+</head>
+
+<body>
+<th:block id="content">
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" style="background-image: url(/img/breadcrumb.jpg)">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <div class="breadcrumb__option">
+                            <a href="/">Trang chủ</a>
+                            <a th:href="@{/danh-muc/{name} (name=${product.category.name})}"
+                               th:text="${product.category.name}">Vegetables</a>
+                            <span th:text="${product.name}">Vegetable’s Package</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Product Details Section Begin -->
+    <section class="product-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__item">
+                            <img class="product__details__pic__item--large"
+                                 th:src="${product.mainImage != null ? product.mainImage : '/img/image-placeholder.png'}"
+                                 alt="">
+                        </div>
+                        <div class="product__details__pic__slider owl-carousel">
+                            <th:block th:if="not ${#lists.isEmpty(product.subImages)}">
+                                <img th:each="image : ${product.subImages}" th:data-imgbigurl="${image}"
+                                     th:src="${image}" alt="">
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__text">
+                        <h3 th:text="${product.name}">Vetgetable’s Package</h3>
+                        <div class="product__details__rating d-flex align-items-center">
+                            <div class="rating mr-1">
+
+                            </div>
+                            <span>(<span class="review-count d-inline-block m-0"></span> đánh giá)</span>
+                        </div>
+                        <div class="product__details__price"
+                             th:classappend="${product.discountPrice != null} ? 'has-discount' : ''">
+                            <span th:if="${product.discountPrice != null}"
+                                  th:classappend="${product.discountPrice != null} ? 'discount-price' : ''"
+                                  th:text="|${#numbers.formatInteger(product.discountPrice, 3, 'POINT')}đ|"></span>
+                            <span th:classappend="${product.discountPrice != null} ? 'original-price' : ''"
+                                  th:text="|${#numbers.formatInteger(product.price, 3, 'POINT')}đ|"></span>
+                        </div>
+                        <p th:text="${product.description}">Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.
+                            Vestibulum ac diam sit amet quam
+                            vehicula elementum sed sit amet dui. Sed porttitor lectus nibh. Vestibulum ac diam sit amet
+                            quam vehicula elementum sed sit amet dui. Proin eget tortor risus.</p>
+                        <th:block
+                                th:if="${product.status == T(vn.techmaster.ecommecerapp.entity.Product.Status).AVAILABLE}">
+                            <div class="product__details__quantity">
+                                <div class="quantity">
+                                    <div class="pro-qty">
+                                        <span class="dec qtybtn">-</span>
+                                        <input type="text" value="1" readonly>
+                                        <span class="inc qtybtn">+</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="border-0 primary-btn btn-add-to-card">THÊM VÀO GIỎ HÀNG</button>
+                            <button class="border-0 heart-icon btn-add-to-wishlist"><span class="icon_heart_alt"></span>
+                            </button>
+                        </th:block>
+                        <ul>
+                            <li><b>Tình trạng</b> <span th:text="${product.status.getDisplayValue()}">Còn hàng</span>
+                            </li>
+                            <li th:if="${product.status == T(vn.techmaster.ecommecerapp.entity.Product.Status).AVAILABLE}">
+                                <b>Số lượng</b> <span
+                                    th:text="${product.stockQuantity}">1</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Product Details Section End -->
+    <section class="review-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="product__details__tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-1" role="tab"
+                                   aria-selected="true">Thông tin sản phẩm</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tabs-2" role="tab"
+                                   aria-selected="false">Đánh giá <span>(<span
+                                        class="review-count d-inline-block m-0"></span>)</span></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane" id="tabs-1" role="tabpanel">
+                                <div class="product__details__tab__desc">
+                                    <h6>Thông tin sản phẩm</h6>
+
+                                    <p th:each="attribute : ${product.getAttributes()}">
+                                        <span th:text="${attribute.attributeName}"></span>:
+                                        <span th:text="${attribute.attributeValue}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="tab-pane active" id="tabs-2" role="tabpanel">
+                                <div class="product__details__tab__desc">
+                                    <div class="review-overview mb-5 bg-white p-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="overview-avg d-flex justify-content-center align-items-center flex-column h-100">
+                                                    <p>Đánh Giá Trung Bình</p>
+                                                    <h2></h2>
+                                                    <div class="rating mb-2">
+
+                                                    </div>
+                                                    <p class="mb-0"><span
+                                                            class="review-count d-inline-block m-0"></span> đánh giá</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="overview-progress d-flex justify-content-center align-items-center flex-column h-100">
+                                                    <div class="progress-block w-100">
+                                                        <div class="progress-item d-flex align-items-center w-100 mb-1">
+                                                            <span class="mr-1">5</span>
+                                                            <span class="mr-1 rating"><i class="fa fa-star"></i></span>
+                                                            <div class="flex-grow-1 progress progress-success progress-sm progress-line">
+                                                                <div class="progress-bar" style="width: 48%;"></div>
+                                                            </div>
+                                                            <span class="ml-1">10</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="d-flex justify-content-center align-items-center flex-column h-100">
+                                                    <p>Bạn đã mua sản phẩm này?</p>
+                                                    <button class="border-0 primary-btn btn-create-review">Gửi đánh giá
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-list">
+
+                                    </div>
+                                    <div class="pagination-container mt-4">
+                                        <div id="review-pagination" class="d-flex justify-content-center"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal-review" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đánh giá sản phẩm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="review-product-info text-center">
+                        <img th:src="${product.mainImage != null ? product.mainImage : '/img/image-placeholder.png'}"
+                             alt="">
+                        <p th:text="${product.name}"></p>
+                    </div>
+                    <div class="review-product-rating">
+                        <div class="text-center">
+                            <span class="review-product-rating-item" data-rating="1" data-message="Không thích"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="2" data-message="Tạm được"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="3" data-message="Bình thường"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="4" data-message="Hài lòng"><i
+                                    class="fa fa-star"></i></span>
+                            <span class="review-product-rating-item" data-rating="5" data-message="Tuyệt vời"><i
+                                    class="fa fa-star"></i></span>
+                        </div>
+                        <div class="text-center">
+                            <p class="review-product-rating-result"></p>
+                        </div>
+                    </div>
+                    <div class="review-product-content">
+                        <form id="form-review">
+                            <div class="row" th:if="${isLogin == false}">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Họ tên" name="name"
+                                               id="author-name">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Email" name="email"
+                                               id="author-email">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Số điện thoại" name="phone"
+                                               id="author-phone">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                    <textarea id="review-content" placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm"
+                                              class="form-control" name="content"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="review-product-btn d-flex justify-content-center">
+                        <button class="border-0 primary-btn mt-2" id="btn-send-review">Hoàn tất</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Product Section Begin -->
+    <section class="related-product" th:if="not ${#lists.isEmpty(relatedProducts)}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title related__product__title">
+                        <h2>Sản phẩm liên quan</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6" th:each="rProduct : ${relatedProducts}">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg"
+                             th:style="|background-image: url(${rProduct.imageUrl != null ? rProduct.imageUrl : '/img/image-placeholder.png'})|">
+                            <ul class="product__item__pic__hover">
+                                <li><a href="javascript:void(0)" th:onclick="|addToWishList(${rProduct.productId})|"><i
+                                        class="fa fa-heart"></i></a></li>
+                                <li><a href="javascript:void(0)" th:onclick="|addToCart(${rProduct.productId}, 1)|"><i
+                                        class="fa fa-shopping-cart"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6><a th:href="@{/san-pham/{id}/{slug} (id=${rProduct.productId}, slug=${rProduct.slug})}" th:text="${rProduct.name}">Sản
+                                phẩm 1</a></h6>
+                            <div th:classappend="${rProduct.discountPrice != null} ? 'product-item-price' : ''">
+                                <h5 th:if="${rProduct.discountPrice != null}" th:text="|${#numbers.formatInteger(rProduct.discountPrice, 3, 'POINT')}đ|"
+                                    class="discount-price"></h5>
+                                <h5 th:text="|${#numbers.formatInteger(rProduct.price, 3, 'POINT')}đ|"
+                                    th:classappend="${rProduct.discountPrice != null ? 'original-price' : ''}">$100</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Related Product Section End -->
+</th:block>
+
+<th:block id="js">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.min.js"
+            integrity="sha512-GzbaI5EsNzdEUq6/2XLYpr1y9CUZRIVsUeWTAFgULtQa5jZ3Nug8i0nZKM6jp9NffBCZhymPPQFcF0DK+JkRpw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script th:inline="javascript">
+        const product = [[${product}]];
+        const relatedProducts = [[${relatedProducts}]];
+        const reviews = [[${reviews}]];
+        console.log({product, relatedProducts, reviews});
+    </script>
+    <script src="/js/web/product-detail/common.js"></script>
+    <script th:if="${product.status == T(vn.techmaster.ecommecerapp.entity.Product.Status).AVAILABLE}"
+            src="/js/web/product-detail/product-detail.js"></script>
+    <script th:if="${isLogin == true}" src="/js/web/product-detail/review.js"></script>
+    <script th:if="${isLogin == false}" src="/js/web/product-detail/review-anonymous.js"></script>
+</th:block>
+</body>
+
+</html>

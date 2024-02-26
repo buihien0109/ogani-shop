@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{:: #css}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Tạo sản phẩm</title>
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/admin/products">Product</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Tạo sản phẩm
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-6">
+                    <a href="/admin/products" type="button" class="btn btn-default">
+                        <i class="fas fa-chevron-left"></i> Quay lại
+                    </a>
+                    <button type="button" class="btn btn-info px-4" id="btn-create">
+                        Lưu
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="form-create-product">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label>Tên sản phẩm</label>
+                                            <input type="text" class="form-control" id="name" name="name"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Mô tả ngắn</label>
+                                            <textarea id="description" class="form-control" rows="16" name="description"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Số lượng</label>
+                                            <input type="text" class="form-control" id="stock-quantity" name="stockQuantity" value="0"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Giá sản phẩm</label>
+                                            <input type="text" class="form-control" id="price" name="price"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Trạng thái</label>
+                                            <select id="status" class="form-control" name="status">
+                                                <option th:each="status : ${statusList}" th:value="${status}"
+                                                        th:text="${status.getDisplayValue()}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Danh mục cha</label>
+                                            <select id="parent-category" class="form-control" name="parent">
+                                                <option hidden="hidden">Chọn danh mục cha</option>
+                                                <option th:each="category : ${categoryList}"
+                                                        th:value="${category.getMainCategory().categoryId}"
+                                                        th:text="${category.getMainCategory().name}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Danh mục con</label>
+                                            <select id="sub-category" class="form-control" disabled name="sub">
+                                                <option hidden="hidden">Chọn danh mục con</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Nhà cung cấp</label>
+                                            <select id="supplier" class="form-control" name="supplier">
+                                                <option hidden="hidden">Chọn nhà cung cấp</option>
+                                                <option th:each="supplier : ${supplierList}"
+                                                        th:value="${supplier.supplierId}"
+                                                        th:text="${supplier.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+    <script th:inline="javascript">
+        const statusList = [[${statusList}]];
+        const categoryList = [[${categoryList}]];
+        console.log({statusList, categoryList});
+    </script>
+    <script th:src="@{/admin-assets/assets/js/product/create.js}"></script>
+</th:block>
+
+</body>
+
+</html>

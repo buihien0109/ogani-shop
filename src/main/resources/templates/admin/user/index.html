@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Tất cả user</title>
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Danh sách user
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-12">
+                    <a href="/admin/users/create" type="button" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tạo user
+                    </a>
+                    <a href="/admin/users" type="button" class="btn btn-info">
+                        <i class="fas fa-redo"></i> Refresh
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover datatables-table">
+                                <thead>
+                                <tr>
+                                    <th>Họ tên</th>
+                                    <th>Email</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Trạng thái</th>
+                                    <th>Roles</th>
+                                    <th>Ngày đăng ký</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user : ${users}">
+                                    <td>
+                                        <a th:href="@{/admin/users/{id}/detail(id=${user.userId})}"
+                                           th:text="${user.username}"></a>
+                                    </td>
+                                    <td th:text="${user.email}"></td>
+                                    <td th:text="${user.phone}"></td>
+                                    <td>
+                                        <span class="badge bg-success" th:if="${user.enabled}">Kích hoạt</span>
+                                        <span class="badge bg-secondary" th:if="not ${user.enabled}">Chưa kích hoạt</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info mr-1" th:each="role : ${user.roles}"
+                                              th:text="${role.name}"></span>
+                                    </td>
+                                    <td th:text="${#dates.format(user.createdAt, 'dd/MM/yyyy')}">Ngày tạo</td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+
+</th:block>
+</body>
+
+</html>

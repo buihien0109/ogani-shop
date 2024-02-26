@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/layout :: layout(~{:: title}, ~{}, ~{:: #content}, ~{:: #js})}">
+<head>
+    <title>Shopping Cart</title>
+</head>
+
+<body>
+<th:block id="content">
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" style="background-image: url(/img/breadcrumb.jpg)">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <div class="breadcrumb__option">
+                            <a href="/">Trang chủ</a>
+                            <span>Giỏ hàng</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shoping Cart Section Begin -->
+    <section class="shoping-cart spad">
+        <div class="container">
+            <div class="row shoping-cart-products">
+                <th:block th:if="${#lists.isEmpty(cart.cartItems)}">
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-3">Không có sản phẩm nào trong giỏ hàng</h4>
+
+                        <div class="shoping__cart__btns">
+                            <a href="/" class="primary-btn cart-btn" style="background: #7fad39; color: #fff;">Tiếp tục mua hàng</a>
+                        </div>
+                    </div>
+
+                </th:block>
+                <th:block th:if="not ${#lists.isEmpty(cart.cartItems)}">
+                    <div class="col-lg-12">
+                        <div class="shoping__cart__table">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="shoping__product" style="width: 50%">Sản phẩm</th>
+                                    <th style="width: 20%">Giá</th>
+                                    <th style="width: 13%">Số lượng</th>
+                                    <th style="width: 15%">Thành tiền</th>
+                                    <th style="width: 2%"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="cartItem : ${cart.cartItems}">
+                                    <td class="shoping__cart__item">
+                                        <div class="d-flex align-items-center">
+                                            <img th:src="${cartItem.product.mainImage != null ? cartItem.product.mainImage : '/img/image-placeholder.png'}" alt="">
+                                            <h5>
+                                                <a class="text-muted"
+                                                   th:href="@{/san-pham/{id}/{slug} (id=${cartItem.product.productId}, slug=${cartItem.product.slug})}"
+                                                   th:text="${cartItem.product.name}">Vegetable’s Package</a>
+                                            </h5>
+                                        </div>
+                                    </td>
+                                    <td class="shoping__cart__price"
+                                        th:classappend="${cartItem.product.discountPrice != null} ? 'has-discount' : ''">
+                                    <span th:if="${cartItem.product.discountPrice != null}"
+                                          th:classappend="${cartItem.product.discountPrice != null} ? 'discount-price' : ''"
+                                          th:text="|${#numbers.formatInteger(cartItem.product.discountPrice, 3, 'POINT')}đ|"></span>
+                                        <span th:classappend="${cartItem.product.discountPrice != null} ? 'original-price' : ''"
+                                              th:text="|${#numbers.formatInteger(cartItem.product.price, 3, 'POINT')}đ|"></span>
+                                    </td>
+                                    <td class="shoping__cart__quantity">
+                                        <div class="quantity">
+                                            <div class="pro-qty">
+                                            <span class="dec qtybtn"
+                                                  th:onclick="|decrementQuantity(${cartItem.cartItemId})|">-</span>
+                                                <input type="text" th:value="${cartItem.quantity}" readonly>
+                                                <span class="inc qtybtn"
+                                                      th:onclick="|incrementQuantity(${cartItem.cartItemId})|">+</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="shoping__cart__total"
+                                        th:with="total=${cartItem.product.discountPrice != null ? cartItem.product.discountPrice * cartItem.quantity : cartItem.product.price * cartItem.quantity}"
+                                        th:text="|${#numbers.formatInteger(total, 3, 'POINT')}đ|">
+                                        $110.00
+                                    </td>
+                                    <td class="shoping__cart__item__close">
+                                    <span class="icon_close"
+                                          th:onclick="|deleteCartItem(${cartItem.cartItemId})|"></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </th:block>
+
+            </div>
+            <div class="row shoping-cart-info" th:if="not ${#lists.isEmpty(cart.cartItems)}">
+                <div class="col-lg-6">
+                    <div class="shoping__cart__btns">
+                        <a href="/" class="primary-btn cart-btn">Tiếp tục mua hàng</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Tổng tiền giỏ hàng</h5>
+                        <ul>
+                            <li>Thành tiền <span class="temporary-amount"></span></li>
+                            <li>Tổng tiền <span class="total-amount"></span></li>
+                        </ul>
+                        <a href="/thanh-toan" class="primary-btn">THANH TOÁN</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shoping Cart Section End -->
+</th:block>
+
+<th:block id="js">
+    <script src="/js/web/shopping-cart.js"></script>
+</th:block>
+</body>
+
+</html>

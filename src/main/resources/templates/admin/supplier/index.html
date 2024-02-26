@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+
+<head>
+    <title>Danh mục nhà cung cấp</title>
+</head>
+
+<body>
+<!-- BODY -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/admin/dashboard">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Danh mục nhà cung cấp
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row py-2">
+                <div class="col-12">
+                    <a href="/admin/suppliers/create" class="btn btn-primary" id="btn-open-modal">
+                        <i class="fas fa-plus"></i> Tạo nhà cung cấp
+                    </a>
+                    <a href="/admin/suppliers" type="button" class="btn btn-info">
+                        <i class="fas fa-redo"></i> Refresh
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover datatables-table">
+                                <thead>
+                                <tr>
+                                    <th style="width: 10%">Logo</th>
+                                    <th style="width: 30%">Tên nhà cung cấp</th>
+                                    <th style="width: 10%">Số điện thoại</th>
+                                    <th style="width: 15%">Email</th>
+                                    <th style="width: 35%">Địa chỉ</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="supplier : ${suppliers}">
+                                    <td>
+                                        <img th:src="${supplier.thumbnail}" alt="" width="50px" height="50px"
+                                             class="border rounded-circle" style="object-fit: cover">
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/admin/suppliers/{id}/detail(id=${supplier.supplierId})}"
+                                           th:text="${supplier.name}"></a>
+                                    </td>
+                                    <td th:text="${supplier.phone}"></td>
+                                    <td th:text="${supplier.email}"></td>
+                                    <td th:text="${supplier.address}"></td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+
+</th:block>
+</body>
+
+</html>

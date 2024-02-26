@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/layout :: layout(~{:: title}, ~{}, ~{:: #content}, ~{:: #js})}">
+
+<head>
+    <title>Thông tin tài khoản</title>
+</head>
+
+<body>
+<th:block id="content">
+    <!-- Blog Section Begin -->
+    <section class="account-section spad">
+        <div class="container p-4 bg-white">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="customer-sidebar">
+                        <th:block th:replace="~{user/fragments/sidebar :: customer-sidebar}"></th:block>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="customer-info pb-5">
+                        <h4 class="mb-4">Thông tin tài khoản</h4>
+                        <div class="row mb-4">
+                            <div class="col-lg-2">
+                                <div class="d-flex align-items-center h-100">
+                                    <p class="my-0">Avatar</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="checkout__input mb-0">
+                                    <div class="user-avatar-container d-flex align-items-center">
+                                        <img id="avatar-preview" th:src="${currentUser.avatar}" alt="">
+                                        <label for="avatar">Đổi Avatar</label>
+                                        <input type="file" id="avatar" class="d-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <form id="form-update-profile">
+                            <div class="row mb-4">
+                                <div class="col-lg-2">
+                                    <div class="d-flex align-items-center h-100">
+                                        <p class="my-0">Họ tên</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="checkout__input mb-0 form-group">
+                                        <input type="text" placeholder="Nhập họ tên đầy đủ"
+                                               th:value="${currentUser.username}" id="username" name="username"
+                                               class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-lg-2">
+                                    <div class="d-flex align-items-center h-100">
+                                        <p class="my-0">Số điện thoại</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="checkout__input mb-0 form-group">
+                                        <input type="text" placeholder="Nhập số điện thoại"
+                                               th:value="${currentUser.phone}" id="phone" name="phone" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-lg-2">
+                                    <div class="d-flex align-items-center h-100">
+                                        <p class="my-0">Email</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="checkout__input mb-0 form-group">
+                                        <input type="text" placeholder="Nhập email" disabled
+                                               th:value="${currentUser.email}" id="email" name="email" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="w-100 d-flex justify-content-end">
+                                        <button type="submit" class="border-0 primary-btn" id="btn-update-profile">Cập nhật</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="customer-info pt-5" style="border-top : 10px solid #f2f2f2">
+                        <form id="form-update-password">
+                            <h4 class="mb-4">Đổi mật khẩu</h4>
+                            <div class="row mb-4">
+                                <div class="col-lg-2">
+                                    <div class="d-flex align-items-center h-100">
+                                        <p class="my-0">Mật khẩu cũ</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="checkout__input mb-0">
+                                        <div class="login-form-input form-group mb-0">
+                                            <input type="password" id="old-password" class="input-full form-control"
+                                                   placeholder="Nhập mật khẩu cũ" autocomplete="off" name="oldPassword">
+                                            <span class="icon-toggle-password"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-lg-2">
+                                    <div class="d-flex align-items-center h-100">
+                                        <p class="my-0">Mật khẩu mới</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="checkout__input mb-0">
+                                        <div class="login-form-input form-group mb-0">
+                                            <input type="password" id="new-password" class="input-full form-control"
+                                                   placeholder="Nhập mật khẩu mới" autocomplete="off" name="newPassword">
+                                            <span class="icon-toggle-password"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-lg-2">
+                                    <div class="d-flex align-items-center h-100">
+                                        <p class="my-0">Nhập lại mật khẩu mới</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="checkout__input mb-0">
+                                        <div class="login-form-input form-group mb-0">
+                                            <input type="password" id="confirm-password" class="input-full form-control"
+                                                   placeholder="Nhập lại mật khẩu mới" autocomplete="off" name="confirmPassword">
+                                            <span class="icon-toggle-password"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="w-100 d-flex justify-content-end">
+                                        <button type="submit" class="border-0 primary-btn" id="btn-update-password">Cập nhật</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Blog Section End -->
+</th:block>
+
+<th:block id="js">
+    <script src="/js/user/account.js"></script>
+</th:block>
+</body>
+
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{admin/layout/layout :: layout(~{:: title}, ~{}, ~{:: .content-wrapper}, ~{:: #js})}">
+
+<head>
+    <title>Dashboard</title>
+</head>
+
+<body>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <h1 class="m-0">Dashboard</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 col-4">
+                    <div class="small-box bg-lightblue">
+                        <div class="inner">
+                            <h3 th:text="${totalRevenue}" class="currency">150</h3>
+                            <p>Doanh thu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-4">
+                    <div class="small-box bg-lightblue">
+                        <div class="inner">
+                            <h3 th:text="${totalPayment}" class="currency">53</h3>
+                            <p>Chi phí</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-4">
+                    <div class="small-box bg-lightblue">
+                        <div class="inner">
+                            <h3 th:text="${totalRevenue - totalPayment}" class="currency">65</h3>
+                            <p>Lợi nhuận</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4 col-4">
+                    <div class="small-box bg-gradient-success">
+                        <div class="inner">
+                            <h3 th:text="${newOrders}">150</h3>
+                            <p>Đơn hàng mới</p>
+                        </div>
+                        <a href="/admin/orders" class="small-box-footer">Xem thêm <i
+                                class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-4">
+                    <div class="small-box bg-gradient-success">
+                        <div class="inner">
+                            <h3 th:text="${newUsers}">53</h3>
+                            <p>User mới</p>
+                        </div>
+                        <a href="/admin/users" class="small-box-footer">Xem thêm <i
+                                class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-4">
+                    <div class="small-box bg-gradient-success">
+                        <div class="inner">
+                            <h3 th:text="${newBlogs}">65</h3>
+                            <p>Bài viết mới</p>
+                        </div>
+                        <a href="/admin/blogs" class="small-box-footer">Xem thêm <i
+                                class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <canvas id="topProduct"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <canvas id="revenue"></canvas>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header border-transparent">
+                            <h3 class="card-title">Đơn hàng gần đây</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table m-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Order Number</th>
+                                        <th>Trạng thái</th>
+                                        <th>Tổng tiền</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${latestOrders}">
+                                        <td>
+                                            <a th:href="@{/admin/orders/{orderNumber}/detail (orderNumber=${order.orderNumber})}"
+                                               th:text="${order.orderNumber}">OR9842</a>
+                                        </td>
+                                        <td>
+                                            <th:block th:switch="${order.status}">
+                                                <span class="badge badge-warning"
+                                                      th:case="${T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).WAIT}"
+                                                      th:text="${order.status.getDisplayValue()}">Shipped</span>
+                                                <span class="badge badge-primary"
+                                                      th:case="${T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).WAIT_DELIVERY}"
+                                                      th:text="${order.status.getDisplayValue()}">Shipped</span>
+                                                <span class="badge badge-info"
+                                                      th:case="${T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).DELIVERY}"
+                                                      th:text="${order.status.getDisplayValue()}">Shipped</span>
+                                                <span class="badge badge-success"
+                                                      th:case="${T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).COMPLETE}"
+                                                      th:text="${order.status.getDisplayValue()}">Shipped</span>
+                                                <span class="badge badge-secondary"
+                                                      th:case="${T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).CANCELED}"
+                                                      th:text="${order.status.getDisplayValue()}">Shipped</span>
+                                                <span class="badge badge-danger"
+                                                      th:case="${T(vn.techmaster.ecommecerapp.entity.OrderTable.Status).RETURNED}"
+                                                      th:text="${order.status.getDisplayValue()}">Shipped</span>
+                                            </th:block>
+                                        </td>
+                                        <td>
+                                            <span class="currency" th:text="${order.totalAmount}">1,000,000</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer clearfix">
+                            <a href="/admin/orders" class="btn btn-sm btn-secondary float-right">Xem tất cả</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">User mới nhất</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="users-list clearfix">
+                                <li th:each="user : ${latestUsers}">
+                                    <img th:src="${user.avatar}"
+                                         style="width: 80px; height: 80px; object-fit: cover; object-position: center"
+                                         alt="User Image">
+                                    <a class="users-list-name my-1"
+                                       th:href="@{/admin/users/{id}/detail (id=${user.userId})}"
+                                       th:text="${user.username}">Alexander Pierce</a>
+                                    <span class="users-list-date"
+                                          th:text="${#dates.format(user.createdAt, 'dd/MM/yyyy')}">Today</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="/admin/users" class="btn btn-sm btn-secondary float-right">Xem tất cả</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block id="js">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        const newOrders = [[${newOrders}]];
+        const newUsers = [[${newUsers}]];
+        const newBlogs = [[${newBlogs}]];
+        const totalRevenue = [[${totalRevenue}]];
+        const totalPayment = [[${totalPayment}]];
+        const latestOrders = [[${latestOrders}]];
+        const latestUsers = [[${latestUsers}]];
+        const bestSellingProducts = [[${bestSellingProducts}]];
+        const revenueAndExpenseList = [[${revenueAndExpenseList}]];
+
+        console.log({
+            newOrders,
+            newUsers,
+            newBlogs,
+            totalRevenue,
+            totalPayment,
+            latestOrders,
+            latestUsers,
+            bestSellingProducts,
+            revenueAndExpenseList
+        })
+
+        // Chart top product
+        const ctxTopSellingProduct = document.getElementById('topProduct').getContext('2d');
+        const topSellingProductBarChart = new Chart(ctxTopSellingProduct, {
+            type: 'bar',
+            data: {
+                labels: bestSellingProducts.map(product => product.name),
+                datasets: [{
+                    label: 'Lượt bán',
+                    data: bestSellingProducts.map(product => product.quantity),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Chart revenue + payment
+        const ctxRevenue = document.getElementById('revenue').getContext('2d');
+        const revenueLineChart = new Chart(ctxRevenue, {
+            type: 'line',
+            data: {
+                labels: revenueAndExpenseList.map(item => `Tháng ${item.month}/${item.year}`),
+                datasets: [
+                    {
+                        label: 'Doanh thu',
+                        data: revenueAndExpenseList.map(item => item.revenue),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Chi phí',
+                        data: revenueAndExpenseList.map(item => item.expense),
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</th:block>
+</body>
+
+</html>
